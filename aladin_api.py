@@ -4,6 +4,7 @@ import json
 
 
 def used_book_info(TTBKey):
+    
     book_lists = []
 
     for i in range(10):
