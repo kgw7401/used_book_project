@@ -1,0 +1,4 @@
+requests==2.25.1
+json==2.0.9
+python-dotenv==0.19.2
+psycopg2==2.9.3
