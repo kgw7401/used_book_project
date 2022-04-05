@@ -44,8 +44,7 @@ def insert_row(cursor, data):
     que = 'INSERT INTO used_book ({}) VALUES ({}) ON CONFLICT (itemId) DO UPDATE SET {}'.format(col, place_holders, key_holders)
     cursor.execute(que, list(data.values())*2)
 
-
-if __name__ == "__main__":
+def main():
     load_dotenv()
     TTBKey = os.environ.get("TTBKey")
     book_lists = used_book_info(TTBKey)
@@ -65,30 +64,6 @@ if __name__ == "__main__":
     cursor.close()
     conn.close()
 
-def insert_row(cursor, data):
-    col = ', '.join(data)
-    place_holders = ', '.join(['%s']*len(data))
-    key_holders = ', '.join([k+'=%s' for k in data.keys()])
-    que = 'INSERT INTO used_book ({}) VALUES ({}) ON CONFLICT (itemId) DO UPDATE SET {}'.format(col, place_holders, key_holders)
-    cursor.execute(que, list(data.values())*2)
-
 
 if __name__ == "__main__":
-    load_dotenv()
-    TTBKey = os.environ.get("TTBKey")
-    book_lists = used_book_info(TTBKey)
-
-    host = os.environ.get('host')
-    port = os.environ.get('port')
-    user = os.environ.get('user')
-    database = os.environ.get('database')
-    password = os.environ.get('password')
-
-    conn = psycopg2.connect(host=host, user=user, password=password,
-                        dbname=database, port=port)
-    cursor = conn.cursor()
-    for book_info in book_lists:
-        insert_row(cursor, book_info)
-        conn.commit()
-    cursor.close()
-    conn.close()
+    main()
