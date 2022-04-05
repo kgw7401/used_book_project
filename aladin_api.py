@@ -1,10 +1,12 @@
 import os
 import requests
 import json
+import psycopg2
+from dotenv import load_dotenv
 
 
 def used_book_info(TTBKey):
-    
+
     book_lists = []
 
     for i in range(10):
@@ -33,3 +35,60 @@ def used_book_info(TTBKey):
     length = len(book_lists)
     print(f"총 {length}개의 데이터가 추출되었습니다.")
     return book_lists
+
+
+def insert_row(cursor, data):
+    col = ', '.join(data)
+    place_holders = ', '.join(['%s']*len(data))
+    key_holders = ', '.join([k+'=%s' for k in data.keys()])
+    que = 'INSERT INTO used_book ({}) VALUES ({}) ON CONFLICT (itemId) DO UPDATE SET {}'.format(col, place_holders, key_holders)
+    cursor.execute(que, list(data.values())*2)
+
+
+if __name__ == "__main__":
+    load_dotenv()
+    TTBKey = os.environ.get("TTBKey")
+    book_lists = used_book_info(TTBKey)
+
+    host = os.environ.get('host')
+    port = os.environ.get('port')
+    user = os.environ.get('user')
+    database = os.environ.get('database')
+    password = os.environ.get('password')
+
+    conn = psycopg2.connect(host=host, user=user, password=password,
+                        dbname=database, port=port)
+    cursor = conn.cursor()
+    for book_info in book_lists:
+        insert_row(cursor, book_info)
+        conn.commit()
+    cursor.close()
+    conn.close()
+
+def insert_row(cursor, data):
+    col = ', '.join(data)
+    place_holders = ', '.join(['%s']*len(data))
+    key_holders = ', '.join([k+'=%s' for k in data.keys()])
+    que = 'INSERT INTO used_book ({}) VALUES ({}) ON CONFLICT (itemId) DO UPDATE SET {}'.format(col, place_holders, key_holders)
+    cursor.execute(que, list(data.values())*2)
+
+
+if __name__ == "__main__":
+    load_dotenv()
+    TTBKey = os.environ.get("TTBKey")
+    book_lists = used_book_info(TTBKey)
+
+    host = os.environ.get('host')
+    port = os.environ.get('port')
+    user = os.environ.get('user')
+    database = os.environ.get('database')
+    password = os.environ.get('password')
+
+    conn = psycopg2.connect(host=host, user=user, password=password,
+                        dbname=database, port=port)
+    cursor = conn.cursor()
+    for book_info in book_lists:
+        insert_row(cursor, book_info)
+        conn.commit()
+    cursor.close()
+    conn.close()
