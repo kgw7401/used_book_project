@@ -58,11 +58,16 @@ def main():
     conn = psycopg2.connect(host=host, user=user, password=password,
                         dbname=database, port=port)
     cursor = conn.cursor()
+
+    print("DB에 저장중...")
+
     for book_info in book_lists:
         insert_row(cursor, book_info)
         conn.commit()
     cursor.close()
     conn.close()
+
+    print("저장 완료!")
 
 
 if __name__ == "__main__":
